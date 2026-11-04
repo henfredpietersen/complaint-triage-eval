@@ -8,7 +8,7 @@ on:
     inputs:
       file_url:
         description: "Archived export (zip) from the CFPB narratives archive"
-        default: "https://files.consumerfinance.gov/f/documents/CCDB_Export_21_August_2026.zip"
+        default: "https://files.consumerfinance.gov/f/documents/CCDB_Export_18_May_2026.zip"
   push:
     paths:
       - scripts/make_snapshot.py
@@ -21,7 +21,7 @@ jobs:
   snapshot:
     runs-on: ubuntu-latest
     env:
-      FILE_URL: ${{ github.event.inputs.file_url || 'https://files.consumerfinance.gov/f/documents/CCDB_Export_21_August_2026.zip' }}
+      FILE_URL: ${{ github.event.inputs.file_url || 'https://files.consumerfinance.gov/f/documents/CCDB_Export_18_May_2026.zip' }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
