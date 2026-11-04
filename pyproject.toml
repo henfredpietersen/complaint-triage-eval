@@ -1,0 +1,15 @@
+[project]
+name = "complaint-triage-eval"
+version = "0.1.0"
+description = "Sort real CFPB consumer complaints into queues, abstain when unsure, and score it on a held-out set."
+requires-python = ">=3.10"
+
+[tool.ruff]
+line-length = 120
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "B", "UP"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
