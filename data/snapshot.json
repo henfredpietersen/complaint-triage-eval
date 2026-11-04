@@ -1,0 +1,22 @@
+{
+ "source": {
+  "archive_page": "https://www.consumerfinance.gov/foia-requests/foia-electronic-reading-room/cfpb-consumer-complaint-database-narratives-archive/",
+  "file_url": "https://files.consumerfinance.gov/f/documents/CCDB_Export_21_August_2026.zip",
+  "file_sha256": "c64b8147b499d6236d7d591bfdbe8db45af80694a1afb6bd6a739f2789b8b2b1",
+  "publisher": "Consumer Financial Protection Bureau (CFPB), Consumer Complaint Database",
+  "licence": "Public domain (CFPB complaint data is published as CC0)"
+ },
+ "method": {
+  "seed": 20260814,
+  "per_product": 200,
+  "products": 0,
+  "max_chars": 4000,
+  "note": "Equal sample per product. The real mix is far more uneven: see product_counts."
+ },
+ "rows_in_export": 667140,
+ "rows_with_narrative": 1,
+ "product_counts": {
+  "Credit reporting or other personal consumer reports": 1
+ },
+ "complaints": []
+}
