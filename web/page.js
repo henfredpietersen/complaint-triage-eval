@@ -237,6 +237,13 @@
     var sim = o.similar.map(function (s) {
       return "<div class='case'><b>" + esc(short(s.product)) + "</b> · " + esc(s.issue) + " <span class='dimc'>(" + esc(s.company_response) + ")</span><div class='q'>“" + esc(s.excerpt) + "…”</div></div>";
     }).join("") || "<p>No similar complaints found.</p>";
+    var ex = info.examples.filter(function (e) { return e.text.trim() === text; })[0];
+    if (ex) {
+      var right = ex.product === o.product;
+      head += "<p style='margin-top:6px'>The consumer filed this under <b>" + esc(ex.product) + "</b> (issue: " + esc(ex.issue) + "). " +
+        (right ? "<span class='pill ok'>right product</span>" : "<span class='pill bad'>wrong product</span>") +
+        (o.routed ? "" : " It wasn't routed, so a person would have caught it either way.") + "</p>";
+    }
     $("#res").innerHTML = "<div class='res'>" + head +
       "<h3 style='margin-top:14px'>How sure it was, by product</h3><div class='bars'>" + bars + "</div>" +
       "<h3 style='margin-top:14px'>Words that pushed it there</h3>" + words +
