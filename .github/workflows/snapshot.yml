@@ -33,6 +33,8 @@ jobs:
             -o export.zip "$FILE_URL"
           ls -l export.zip
           unzip -l export.zip | head -20
+      - name: Describe the export
+        run: python scripts/make_snapshot.py --zip export.zip --source-url "$FILE_URL" --describe
       - name: Build the snapshot
         run: python scripts/make_snapshot.py --zip export.zip --source-url "$FILE_URL"
       - name: Commit it if it changed

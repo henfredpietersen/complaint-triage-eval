@@ -80,6 +80,29 @@ def read_rows(zip_path: Path):
                     yield {f: row[i].strip() for f, i in cols.items()}
 
 
+def describe(zip_path: Path, n: int = 20000) -> None:
+    """Print the header and how often each column is filled in the first n rows."""
+    with zipfile.ZipFile(zip_path) as z:
+        name = next(x for x in z.namelist() if x.lower().endswith(".csv"))
+        with z.open(name) as raw:
+            reader = csv.reader(io.TextIOWrapper(raw, encoding="utf-8", errors="replace", newline=""))
+            header = next(reader)
+            filled = Counter()
+            lengths = Counter()
+            rows = 0
+            for row in reader:
+                rows += 1
+                lengths[len(row)] += 1
+                for i, v in enumerate(row):
+                    if v.strip():
+                        filled[i] += 1
+                if rows >= n:
+                    break
+    print(f"{name}: {len(header)} columns; row lengths in first {rows}: {dict(lengths.most_common(5))}")
+    for i, h in enumerate(header):
+        print(f"  {i:2d} {h!r}: filled {filled[i]}/{rows}")
+
+
 def sha256(path: Path) -> str:
     h = hashlib.sha256()
     with open(path, "rb") as f:
@@ -133,8 +156,15 @@ def main(argv=None) -> int:
     p.add_argument("--zip", required=True, type=Path)
     p.add_argument("--source-url", required=True)
     p.add_argument("--out", default="data/snapshot.json", type=Path)
+    p.add_argument("--describe", action="store_true", help="print the header and fill rates, then stop")
     a = p.parse_args(argv)
+    if a.describe:
+        describe(a.zip)
+        return 0
     snap = build(a.zip, a.source_url)
+    if snap["method"]["products"] < 3:
+        print(json.dumps(snap["product_counts"], indent=1))
+        raise SystemExit(f"Only {snap['rows_with_narrative']} rows have a narrative: not enough for a snapshot.")
     a.out.parent.mkdir(parents=True, exist_ok=True)
     a.out.write_text(json.dumps(snap, indent=1, ensure_ascii=False) + "\n", encoding="utf-8")
     print(f"{snap['rows_in_export']:,} rows, {snap['rows_with_narrative']:,} with a narrative; "
