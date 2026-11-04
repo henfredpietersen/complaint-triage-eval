@@ -65,6 +65,7 @@ python -m http.server -d . 8000        # then http://localhost:8000/docs/demo.ht
 - `tests/test_model.py`: a hand-made set where the answers are obvious. Masking and stop words are dropped, the split is stable, clear text goes to the right queue, unknown words and low confidence go to a person, training is deterministic, and the scorecard counts add up.
 - `tests/test_snapshot_and_page.py`: the snapshot matches its own description; a fresh run reproduces every number quoted in this README; the published page embeds the current code; and the page's example complaints all come from the test set.
 - I also ran the page's code under Pyodide 0.26.4 (the version the page loads) and got the same scores as CPython.
+- The snapshot is reproducible: on 4 November 2026 the workflow rebuilt it from the CFPB file on GitHub's servers and got a byte-identical result.
 
 CI runs lint, the tests and the page drift check on every push.
 
