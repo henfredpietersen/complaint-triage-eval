@@ -242,7 +242,8 @@
       var right = ex.product === o.product;
       head += "<p style='margin-top:6px'>The consumer filed this under <b>" + esc(ex.product) + "</b> (issue: " + esc(ex.issue) + "). " +
         (right ? "<span class='pill ok'>right product</span>" : "<span class='pill bad'>wrong product</span>") +
-        (o.routed ? "" : " It wasn't routed, so a person would have caught it either way.") + "</p>";
+        (o.routed ? (right ? "" : " It went to the wrong queue.") :
+          (right ? " Right, but not sure enough, so a person would confirm it." : " It wasn't routed, so a person would catch it.")) + "</p>";
     }
     $("#res").innerHTML = "<div class='res'>" + head +
       "<h3 style='margin-top:14px'>How sure it was, by product</h3><div class='bars'>" + bars + "</div>" +
