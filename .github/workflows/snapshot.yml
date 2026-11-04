@@ -1,0 +1,45 @@
+name: Build data snapshot
+
+# Downloads one archived CFPB complaint export and rebuilds data/snapshot.json from it.
+# Run by hand (Actions tab -> Build data snapshot -> Run workflow). It commits the result.
+
+on:
+  workflow_dispatch:
+    inputs:
+      file_url:
+        description: "Archived export (zip) from the CFPB narratives archive"
+        default: "https://files.consumerfinance.gov/f/documents/CCDB_Export_21_August_2026.zip"
+  push:
+    paths:
+      - scripts/make_snapshot.py
+      - .github/workflows/snapshot.yml
+
+permissions:
+  contents: write
+
+jobs:
+  snapshot:
+    runs-on: ubuntu-latest
+    env:
+      FILE_URL: ${{ github.event.inputs.file_url || 'https://files.consumerfinance.gov/f/documents/CCDB_Export_21_August_2026.zip' }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Download the archived export
+        run: |
+          curl -fsSL --retry 3 -A "complaint-triage-eval snapshot (github.com/henfredpietersen/complaint-triage-eval)" \
+            -o export.zip "$FILE_URL"
+          ls -l export.zip
+          unzip -l export.zip | head -20
+      - name: Build the snapshot
+        run: python scripts/make_snapshot.py --zip export.zip --source-url "$FILE_URL"
+      - name: Commit it if it changed
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/snapshot.json
+          if git diff --cached --quiet; then echo "Snapshot unchanged"; exit 0; fi
+          git commit -m "Rebuild data snapshot from $FILE_URL"
+          git push
